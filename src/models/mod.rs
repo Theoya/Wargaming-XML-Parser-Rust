@@ -1,3 +1,3 @@
-pub mod XmlNode;
+pub mod XmlDocument;
 pub mod XmlElement;
-pub mod XmlDocument; 
+pub mod XmlNode;

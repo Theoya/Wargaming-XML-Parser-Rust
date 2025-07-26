@@ -1,8 +1,8 @@
-use std::collections::HashMap;
-use crate::Tools::lexical_analysis::Token;
+use crate::models::XmlDocument::XmlDocument;
 use crate::models::XmlElement::XmlElement;
 use crate::models::XmlNode::XmlNode;
-use crate::models::XmlDocument::XmlDocument;
+use crate::Tools::lexical_analysis::Token;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 pub enum ParseError {
@@ -17,7 +17,7 @@ pub fn parse_tokens(tokens: Vec<Token>) -> Result<XmlDocument, ParseError> {
     let mut stack = Vec::new();
     let mut current_attributes = HashMap::new();
     let mut root_element: Option<XmlElement> = None;
-    
+
     while let Some(token) = token_iter.next() {
         match token {
             Token::OpenTag(name) => {
@@ -36,7 +36,7 @@ pub fn parse_tokens(tokens: Vec<Token>) -> Result<XmlDocument, ParseError> {
                     if element.name != name {
                         return Err(ParseError::MismatchedTags);
                     }
-                    
+
                     if let Some(parent) = stack.last_mut() {
                         parent.children.push(XmlNode::Element(element));
                     } else {
@@ -59,7 +59,7 @@ pub fn parse_tokens(tokens: Vec<Token>) -> Result<XmlDocument, ParseError> {
                     attributes: current_attributes.clone(),
                     children: Vec::new(),
                 };
-                
+
                 if let Some(parent) = stack.last_mut() {
                     parent.children.push(XmlNode::Element(element));
                 } else {
@@ -102,7 +102,7 @@ pub fn parse_tokens(tokens: Vec<Token>) -> Result<XmlDocument, ParseError> {
             }
         }
     }
-    
+
     // If we reach here, check if we have a valid document
     if stack.is_empty() {
         Ok(XmlDocument { root: root_element })

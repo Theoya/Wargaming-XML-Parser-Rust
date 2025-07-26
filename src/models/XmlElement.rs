@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use crate::models::XmlNode::XmlNode;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct XmlElement {
@@ -19,7 +19,7 @@ impl XmlElement {
         }
         None
     }
-    
+
     pub fn get_text_content(&self) -> String {
         let mut text_parts = Vec::new();
         for child in &self.children {
@@ -29,7 +29,7 @@ impl XmlElement {
         }
         text_parts.join("")
     }
-    
+
     pub fn get_attribute(&self, name: &str) -> Option<&String> {
         self.attributes.get(name)
     }

@@ -3,7 +3,7 @@ use xml_parser::Tools::decompression;
 fn main() {
     println!("XML Parser CLI");
     println!("Use this tool to parse XML files and compressed .rosz files");
-    
+
     // Example usage
     match decompression::decompress_rosz_file("example-data/sample-army.rosz") {
         Ok(files) => {
@@ -16,4 +16,4 @@ fn main() {
             eprintln!("Error: {:?}", e);
         }
     }
-} 
+}

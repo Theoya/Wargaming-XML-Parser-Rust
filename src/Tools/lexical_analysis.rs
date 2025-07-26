@@ -20,7 +20,7 @@ pub enum TokenizeError {
 pub fn tokenize(xml_string: &str) -> Result<Vec<Token>, TokenizeError> {
     let mut tokens = Vec::new();
     let mut chars = xml_string.chars().peekable();
-    
+
     while let Some(&ch) = chars.peek() {
         match ch {
             '<' => {
@@ -38,14 +38,14 @@ pub fn tokenize(xml_string: &str) -> Result<Vec<Token>, TokenizeError> {
             }
         }
     }
-    
+
     tokens.push(Token::EndOfFile);
     Ok(tokens)
 }
 
 fn parse_tag(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Token, TokenizeError> {
     chars.next(); // Consume '<'
-    
+
     match chars.peek() {
         Some('/') => parse_close_tag(chars),
         Some('!') => parse_comment(chars),
@@ -55,9 +55,11 @@ fn parse_tag(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Token, 
     }
 }
 
-fn parse_tag_with_attributes(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Vec<Token>, TokenizeError> {
+fn parse_tag_with_attributes(
+    chars: &mut std::iter::Peekable<std::str::Chars>,
+) -> Result<Vec<Token>, TokenizeError> {
     chars.next(); // Consume '<'
-    
+
     match chars.peek() {
         Some('/') => {
             let token = parse_close_tag(chars)?;
@@ -76,9 +78,11 @@ fn parse_tag_with_attributes(chars: &mut std::iter::Peekable<std::str::Chars>) -
     }
 }
 
-fn parse_open_tag(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Token, TokenizeError> {
+fn parse_open_tag(
+    chars: &mut std::iter::Peekable<std::str::Chars>,
+) -> Result<Token, TokenizeError> {
     let mut tag_name = String::new();
-    
+
     // Parse tag name
     while let Some(&ch) = chars.peek() {
         match ch {
@@ -103,7 +107,7 @@ fn parse_open_tag(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<To
             }
         }
     }
-    
+
     // Parse attributes
     while let Some(&ch) = chars.peek() {
         match ch {
@@ -127,14 +131,16 @@ fn parse_open_tag(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<To
             }
         }
     }
-    
+
     Err(TokenizeError::UnexpectedEndOfInput)
 }
 
-fn parse_open_tag_with_attributes(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Vec<Token>, TokenizeError> {
+fn parse_open_tag_with_attributes(
+    chars: &mut std::iter::Peekable<std::str::Chars>,
+) -> Result<Vec<Token>, TokenizeError> {
     let mut tokens = Vec::new();
     let mut tag_name = String::new();
-    
+
     // Parse tag name
     while let Some(&ch) = chars.peek() {
         match ch {
@@ -161,7 +167,7 @@ fn parse_open_tag_with_attributes(chars: &mut std::iter::Peekable<std::str::Char
             }
         }
     }
-    
+
     // Parse attributes
     while let Some(&ch) = chars.peek() {
         match ch {
@@ -188,14 +194,16 @@ fn parse_open_tag_with_attributes(chars: &mut std::iter::Peekable<std::str::Char
             }
         }
     }
-    
+
     Err(TokenizeError::UnexpectedEndOfInput)
 }
 
-fn parse_close_tag(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Token, TokenizeError> {
+fn parse_close_tag(
+    chars: &mut std::iter::Peekable<std::str::Chars>,
+) -> Result<Token, TokenizeError> {
     chars.next(); // Consume '/'
     let mut tag_name = String::new();
-    
+
     while let Some(&ch) = chars.peek() {
         match ch {
             '>' => {
@@ -208,26 +216,26 @@ fn parse_close_tag(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<T
             }
         }
     }
-    
+
     Err(TokenizeError::UnexpectedEndOfInput)
 }
 
 fn parse_comment(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Token, TokenizeError> {
     chars.next(); // Consume '!'
-    
+
     // Check for <!--
     if chars.next() != Some('-') || chars.next() != Some('-') {
         return Err(TokenizeError::MalformedTag);
     }
-    
+
     let mut comment = String::new();
     let mut prev_chars = [' ', ' '];
-    
+
     while let Some(ch) = chars.next() {
         comment.push(ch);
         prev_chars[0] = prev_chars[1];
         prev_chars[1] = ch;
-        
+
         if prev_chars == ['-', '-'] {
             if chars.next() == Some('>') {
                 comment.pop(); // Remove last '-'
@@ -236,13 +244,15 @@ fn parse_comment(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Tok
             }
         }
     }
-    
+
     Err(TokenizeError::UnexpectedEndOfInput)
 }
 
-fn parse_xml_declaration(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Token, TokenizeError> {
+fn parse_xml_declaration(
+    chars: &mut std::iter::Peekable<std::str::Chars>,
+) -> Result<Token, TokenizeError> {
     chars.next(); // Consume '?'
-    
+
     // Skip until we find ?>
     while let Some(ch) = chars.next() {
         if ch == '?' {
@@ -251,14 +261,16 @@ fn parse_xml_declaration(chars: &mut std::iter::Peekable<std::str::Chars>) -> Re
             }
         }
     }
-    
+
     Err(TokenizeError::UnexpectedEndOfInput)
 }
 
-fn parse_attribute(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<Token, TokenizeError> {
+fn parse_attribute(
+    chars: &mut std::iter::Peekable<std::str::Chars>,
+) -> Result<Token, TokenizeError> {
     let mut name = String::new();
     let mut value = String::new();
-    
+
     // Parse attribute name
     while let Some(&ch) = chars.peek() {
         match ch {
@@ -275,26 +287,26 @@ fn parse_attribute(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<T
             }
         }
     }
-    
+
     // Parse attribute value
     let quote_char = chars.next().ok_or(TokenizeError::UnexpectedEndOfInput)?;
     if quote_char != '"' && quote_char != '\'' {
         return Err(TokenizeError::MalformedAttribute);
     }
-    
+
     while let Some(ch) = chars.next() {
         if ch == quote_char {
             return Ok(Token::Attribute(name, value));
         }
         value.push(ch);
     }
-    
+
     Err(TokenizeError::UnexpectedEndOfInput)
 }
 
 fn parse_text(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<String, TokenizeError> {
     let mut text = String::new();
-    
+
     while let Some(&ch) = chars.peek() {
         if ch == '<' {
             break;
@@ -302,6 +314,6 @@ fn parse_text(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<String
         text.push(ch);
         chars.next();
     }
-    
+
     Ok(text.trim().to_string())
 }
