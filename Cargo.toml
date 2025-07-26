@@ -1,0 +1,37 @@
+[package]
+name = "xml-parser"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A Rust library for parsing XML files"
+license = "MIT"
+repository = "https://github.com/yourusername/xml-parser"
+keywords = ["xml", "parser", "battlescribe", "warhammer"]
+categories = ["parsing", "text-processing"]
+
+[dependencies]
+# XML parsing library
+quick-xml = "0.31"
+serde = { version = "1.0", features = ["derive"] }
+serde-xml-rs = "0.6"
+
+# Compression/Decompression
+zip = "0.6"
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Optional: For more advanced XML features
+roxmltree = "0.18"
+
+[dev-dependencies]
+criterion = "0.5"
+
+[lib]
+name = "xml_parser"
+path = "src/lib.rs"
+
+[[bin]]
+name = "xml-parser-cli"
+path = "src/main.rs" 
