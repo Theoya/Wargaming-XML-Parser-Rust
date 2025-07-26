@@ -4,30 +4,38 @@ use crate::Tools::decompression::{decompress_rosz_file, find_xml_files, Decompre
 fn test_decompress_rosz_file() {
     // Test with the sample army file
     let result = decompress_rosz_file("example-data/Test-sample-army.rosz");
-    
+
     match result {
         Ok(files) => {
             println!("Successfully decompressed {} files:", files.len());
             for file in &files {
                 println!("  - {}", file.filename);
             }
-            
+
             // Find XML files
             let xml_files = find_xml_files(&files);
             println!("Found {} XML files:", xml_files.len());
             for xml_file in &xml_files {
                 println!("  - {}", xml_file.filename);
             }
-            
+
             // Basic assertions
-            assert!(!files.is_empty(), "Should have decompressed at least one file");
-            
+            assert!(
+                !files.is_empty(),
+                "Should have decompressed at least one file"
+            );
+
             // Check if we found any XML files
             if !xml_files.is_empty() {
                 let first_xml = xml_files[0];
-                assert!(!first_xml.content.is_empty(), "XML content should not be empty");
-                println!("First XML file content preview: {}", 
-                    first_xml.content.chars().take(100).collect::<String>());
+                assert!(
+                    !first_xml.content.is_empty(),
+                    "XML content should not be empty"
+                );
+                println!(
+                    "First XML file content preview: {}",
+                    first_xml.content.chars().take(100).collect::<String>()
+                );
             }
         }
         Err(e) => {
@@ -57,9 +65,9 @@ fn test_find_xml_files() {
             content: "<roster>test</roster>".to_string(),
         },
     ];
-    
+
     let xml_files = find_xml_files(&test_files);
-    
+
     assert_eq!(xml_files.len(), 3, "Should find 3 XML-like files");
     assert!(xml_files.iter().any(|f| f.filename == "document.xml"));
     assert!(xml_files.iter().any(|f| f.filename == "catalog.cat"));
@@ -71,4 +79,4 @@ fn test_find_xml_files() {
 fn test_decompress_nonexistent_file() {
     let result = decompress_rosz_file("nonexistent-file.rosz");
     assert!(result.is_err(), "Should fail when file doesn't exist");
-} 
+}

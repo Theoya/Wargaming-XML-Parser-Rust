@@ -1,4 +1,4 @@
-name: run-tests
+name: Test and Lint
 
 on:
   pull_request:
@@ -32,15 +32,18 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-cargo-
           
-    - name: Run tests
-      run: cargo test --verbose
-      
-    - name: Run tests with output
-      if: failure()
-      run: cargo test --verbose -- --nocapture
-      
     - name: Check formatting
       run: cargo fmt --all -- --check
       
     - name: Check clippy
-      run: cargo clippy -- -D warnings 
+      run: cargo clippy -- --warn clippy::all
+      
+    - name: Run tests
+      run: cargo test --verbose
+      
+    - name: Run tests with output (if failed)
+      if: failure()
+      run: cargo test --verbose -- --nocapture
+      
+    - name: Build project
+      run: cargo build --release 
