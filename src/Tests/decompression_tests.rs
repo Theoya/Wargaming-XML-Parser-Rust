@@ -3,7 +3,7 @@ use crate::Tools::decompression::{decompress_rosz_file, find_xml_files, Decompre
 #[test]
 fn test_decompress_rosz_file() {
     // Test with the sample army file
-    let result = decompress_rosz_file("example-data/sample-army.rosz");
+    let result = decompress_rosz_file("example-data/Test-sample-army.rosz");
     
     match result {
         Ok(files) => {
