@@ -10,20 +10,11 @@ keywords = ["xml", "parser", "battlescribe", "warhammer"]
 categories = ["parsing", "text-processing"]
 
 [dependencies]
-# XML parsing library
-quick-xml = "0.31"
-serde = { version = "1.0", features = ["derive"] }
-serde-xml-rs = "0.6"
-
 # Compression/Decompression
 zip = "0.6"
 
 # Error handling
 anyhow = "1.0"
-thiserror = "1.0"
-
-# Optional: For more advanced XML features
-roxmltree = "0.18"
 
 [dev-dependencies]
 criterion = "0.5"
